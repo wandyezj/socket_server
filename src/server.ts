@@ -49,7 +49,9 @@ type Command =  (ws: WebSocket, data: string) => void;
 
 const registeredCommands: {[name: string]: Command} = {
     "unknown": commandUnknown,
-    "ping": commandPing
+    "ping": commandPing,
+    "channel_join":commandChannelJoin,
+    "channle_broadcast":commandChannelBroadcast
 }
 
 
@@ -63,7 +65,7 @@ function handleMessage(ws: WebSocket, data: string) {
     }
 
     let commandName: string = message.command;
-    const commandData: string = message.data;
+    const commandData: any = message.data;
 
     // Unknown Command
     if (isUndefined(commandName) || !registeredCommands.hasOwnProperty(commandName)) {
@@ -74,17 +76,47 @@ function handleMessage(ws: WebSocket, data: string) {
     command(ws, commandData);
 }
 
-function commandUnknown(ws: WebSocket, data: string) {
+function commandUnknown(ws: WebSocket, data: any) {
     const message = "Unknown Command";
     ws.send("Server Says: " + message);
 }
 
-function commandPing(ws: WebSocket, data: string) {
+function commandPing(ws: WebSocket, data: any) {
     const message = data;
     // ping back
     // send the sent data back through the same connection
     ws.send("Server Says: " + message);
 }
+
+
+interface dataChannelInformation {
+    // channel identifier
+    channel: string;
+}
+
+interface dataClientInformation {
+    // client identifier (should this be handled by the server?)  
+    client: string;
+}
+
+
+interface dataChannelJoin extends dataChannelInformation{
+
+}
+
+function commandChannelJoin(ws: WebSocket, data: any) {
+
+}
+
+interface dataChannelBroadcast extends dataChannelInformation {
+    // message to broaccast to all other clients
+    message: string;
+}
+
+function commandChannelBroadcast(ws: WebSocket, data: any) {
+
+}
+
 
 function log(message: string) {
     console.log(message);

@@ -1,5 +1,5 @@
 
 export interface Message {
     command?: string;
-    data?: string;
+    data?:any;
 }
